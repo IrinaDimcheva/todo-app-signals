@@ -39,4 +39,10 @@ export class TodosService {
       )
     );
   }
+
+  toggleAll(isCompleted: boolean): void {
+    this.todosSig.update((todos) =>
+      todos.map((todo) => ({ ...todo, isCompleted }))
+    );
+  }
 }
