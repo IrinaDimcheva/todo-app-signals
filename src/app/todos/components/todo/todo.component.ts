@@ -1,9 +1,13 @@
 import {
   Component,
+  ElementRef,
   EventEmitter,
   Input,
+  OnChanges,
   OnInit,
   Output,
+  SimpleChanges,
+  ViewChild,
   inject,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -16,16 +20,26 @@ import { TodosService } from '../../services/todo.service';
   standalone: true,
   imports: [CommonModule],
 })
-export class TodoComponent implements OnInit {
+export class TodoComponent implements OnInit, OnChanges {
   @Input({ required: true }) todo!: TodoInterface;
   @Input({ required: true }) isEditing!: boolean;
   @Output() setEditingId: EventEmitter<string | null> = new EventEmitter();
+
+  @ViewChild('textInput') textInput?: ElementRef;
 
   todosService = inject(TodosService);
   editingText: string = '';
 
   ngOnInit(): void {
     this.editingText = this.todo.text;
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['isEditing'].currentValue) {
+      setTimeout(() => {
+        this.textInput?.nativeElement.focus();
+      }, 0);
+    }
   }
 
   changeText(event: Event) {
